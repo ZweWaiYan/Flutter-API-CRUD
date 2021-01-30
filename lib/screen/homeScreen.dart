@@ -31,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
   //hint : with created Name
   UserService userService;
 
-  List<UserList> user = []; //todo check 1: Need to check it necessary or not!
   APIResponse<List<UserList>> _apiResponse;
   bool _isLoading = false;
 
@@ -69,91 +68,96 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: Icon(Icons.add),
       ),
-      body: FutureBuilder(
-        future: service.getNoteList(),
-        builder: (BuildContext context,
-            AsyncSnapshot<APIResponse<List<UserList>>> snapshot) {
-          if (snapshot.data == null) {
-            return Center(
-              child: CircularProgressIndicator(backgroundColor: Colors.red),
-            );
-          } else {
-            return ListView.builder(
-              itemCount: _apiResponse.data
-                  .length, //todo check 2: Check display red error message course of itemCount is null
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: double.infinity,
-                    height: 70,
-                    child: Slidable(
-                      actionPane: SlidableDrawerActionPane(),
-                      actions: <Widget>[
-                        IconSlideAction(
-                          icon: Icons.edit,
-                          color: Colors.green,
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        EditScreen(
-                                          id: _apiResponse.data[index].id,
-                                          name: _apiResponse.data[index].name,
-                                          age: _apiResponse.data[index].age,
-                                          job: _apiResponse.data[index].job,
-                                        ))).then((value) {
-                              _fetchUser();
-                            });
-                          },
-                        ),
-                      ],
-                      secondaryActions: [
-                        IconSlideAction(
-                          icon: Icons.delete,
-                          color: Colors.red,
-                          onTap: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return DeleteScreen(
-                                  id: _apiResponse.data[index].id);
-                            })).then((value) {
-                              _fetchUser();
-                            });
-                          },
-                        ),
-                      ],
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: ListTile(
-                              title: Text(_apiResponse.data[index].name),
-                              subtitle:
-                                  Text(_apiResponse.data[index].age.toString()),
-                            ),
+      body: Container(
+        child: FutureBuilder(
+          future: service.getNoteList(),
+          builder: (BuildContext context,
+              AsyncSnapshot<APIResponse<List<UserList>>> snapshot) {
+            if (snapshot.data == null) {
+              return Center(
+                child: CircularProgressIndicator(backgroundColor: Colors.red),
+              );
+            } else if (_apiResponse.data.length == 0) {
+              return Center(
+                child: Text("Data is empty."),
+              );
+            } else {
+              return ListView.builder(
+                itemCount: _apiResponse.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: double.infinity,
+                      height: 70,
+                      child: Slidable(
+                        actionPane: SlidableDrawerActionPane(),
+                        actions: [
+                          IconSlideAction(
+                            icon: Icons.edit,
+                            color: Colors.green,
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          EditScreen(
+                                            id: _apiResponse.data[index].id,
+                                            name: _apiResponse.data[index].name,
+                                            age: _apiResponse.data[index].age,
+                                            job: _apiResponse.data[index].job,
+                                          ))).then((value) {
+                                _fetchUser();
+                              });
+                            },
                           ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                  0.0, 0.0, 15.0, 0.0),
-                              child: Container(
-                                alignment: Alignment.centerRight,
-                                child: Text(_apiResponse.data[index].job),
+                        ],
+                        secondaryActions: [
+                          IconSlideAction(
+                            icon: Icons.delete,
+                            color: Colors.red,
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return DeleteScreen(
+                                    id: _apiResponse.data[index].id);
+                              })).then((value) {
+                                _fetchUser();
+                              });
+                            },
+                          ),
+                        ],
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: ListTile(
+                                title: Text(_apiResponse.data[index].name),
+                                subtitle: Text(
+                                    _apiResponse.data[index].age.toString()),
                               ),
                             ),
-                          )
-                        ],
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                    0.0, 0.0, 15.0, 0.0),
+                                child: Container(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(_apiResponse.data[index].job),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          }
-        },
+                  );
+                },
+              );
+            }
+          },
+        ),
       ),
     );
   }

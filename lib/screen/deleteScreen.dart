@@ -23,8 +23,8 @@ class DeleteScreen extends StatelessWidget {
           content: Text("Are you sure to want delete this user?"),
           actions: [
             FlatButton(
-              onPressed: () {
-                userService.deleteUser(id);
+              onPressed: () async {
+                await userService.deleteUser(id);
                 Navigator.of(context).pop(context);
               },
               child: Text("Yes"),

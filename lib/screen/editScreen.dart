@@ -13,7 +13,6 @@ import 'package:json_curd_doc/service/user_service.dart';
 //userList
 
 class EditScreen extends StatefulWidget {
-  //todo testing 1: change with StatelessWidget
   final String id;
   final String name;
   final String job;
@@ -31,7 +30,7 @@ class _EditScreenState extends State<EditScreen> {
   TextEditingController _jobController = TextEditingController();
   TextEditingController _ageController = TextEditingController();
 
-  //hint: to show data in TextField(this Screen) that data must not be null.
+  //hint: to show existed data in TextField(this Screen) that data must not be null.
   bool get isEditing => widget.id != null;
   //hint: take time for show data in TextField(this Screen)
   bool isLoading = false;
@@ -39,6 +38,8 @@ class _EditScreenState extends State<EditScreen> {
   String errorMessage;
   //hint: if get data from API to show like 'user.name' in UI
   UserList user;
+
+  //hint: Error message for textField
 
   @override
   void initState() {
@@ -83,15 +84,16 @@ class _EditScreenState extends State<EditScreen> {
                   TextField(
                     controller: _nameController,
                     decoration: InputDecoration(hintText: "Name"),
+                    
                   ),
                   TextField(
                     controller: _jobController,
                     decoration: InputDecoration(hintText: "Job"),
                   ),
                   TextField(
-                    controller: _ageController,
-                    decoration: InputDecoration(hintText: "Age"),
-                  ),
+                      controller: _ageController,
+                      decoration: InputDecoration(hintText: "Age"),
+                      keyboardType: TextInputType.number),
                   SizedBox(
                     height: 15.0,
                   ),
